@@ -15,6 +15,12 @@ class DrushBatchCommands extends DrushCommands {
   use StringTranslationTrait;
 
   /**
+   * Default init and error messages.
+   */
+  private const string DEFAULT_INIT_MESSAGE = 'Initialization...';
+  private const string DEFAULT_ERROR_MESSAGE = 'An unexpected error occurred.';
+
+  /**
    * The title of the batch process.
    *
    * @var string
@@ -74,13 +80,23 @@ class DrushBatchCommands extends DrushCommands {
    * DrushBatchCommands constructor.
    *
    * @param array<mixed> $operations
+   *   Batch operations.
    * @param string $title
+   *   Batch title.
    * @param string $initMessage
+   *   Batch init message.
    * @param string $errorMessage
+   *   Batch error message.
    * @param array{0: object|string, 1: string} $finished
+   *   Batch finished method.
    */
-  public function __construct(public readonly array $operations, string $title, string $initMessage, string $errorMessage, array $finished)
-  {
+  public function __construct(
+    public readonly array $operations,
+    string $title,
+    string $initMessage = self::DEFAULT_INIT_MESSAGE,
+    string $errorMessage = self::DEFAULT_ERROR_MESSAGE,
+    array $finished = []
+  ) {
     parent::__construct();
 
     $this->title = $title;
