@@ -1,0 +1,5 @@
+name: Drush Batch Bar
+type: module
+description: 'Displays a beautiful CLI progress bar for batch processes executed via Drush.'
+core_version_requirement: ^10 || ^11
+package: Development
