@@ -10,6 +10,20 @@ namespace Drupal\drush_batch_bar\Batch;
 abstract class DrushBatchBar {
 
   /**
+   * Init batch processes.
+   *
+   * @param string $details
+   *   Details to follow command progress.
+   * @param array<mixed> $context
+   *   The batch context.
+   */
+  protected static function initProcess(string $details, array &$context): void {
+    $context['message'] = "\n$details\n";
+    $context['results']['success'] ??= 0;
+    $context['results']['error'] ??= 0;
+  }
+
+  /**
    * Default method to run at the end of the batch treatment.
    *
    * @param bool $success
