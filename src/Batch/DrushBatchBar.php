@@ -10,6 +10,12 @@ namespace Drupal\drush_batch_bar\Batch;
 abstract class DrushBatchBar {
 
   /**
+   * Default finished messages.
+   */
+  protected const string SUCCESS_MESSAGE = 'success';
+  protected const string ERROR_MESSAGE = 'errors';
+
+  /**
    * Init batch processes.
    *
    * @param string $details
@@ -32,18 +38,17 @@ abstract class DrushBatchBar {
    *   Results.
    * @param array<int, array{0: callable, 1: array<int, mixed>}> $operations
    *   Operations launched.
-   * @param string $success_message
-   *   The success message.
    */
-  protected static function finished(bool $success, array $results, array $operations, string $success_message = 'success'): void {
+  protected static function finished(bool $success, array $results, array $operations): void {
     if ($success === TRUE) {
       \Drupal::messenger()->addStatus(
         \Drupal::translation()->translate(
-          '@success @success_message, @error errors.',
+          '@success @success_message, @error @error_message.',
           [
             '@success' => $results['success'] ?? 0,
-            '@success_message' => $success_message,
+            '@success_message' => static::SUCCESS_MESSAGE,
             '@error' => $results['error'] ?? 0,
+            '@error_message' => static::ERROR_MESSAGE,
           ]
         )
       );
