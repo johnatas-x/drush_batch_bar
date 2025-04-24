@@ -1,8 +1,8 @@
 {
     "name": "drupal/drush_batch_bar",
     "description": "Displays a beautiful CLI progress bar for batch processes executed via Drush.",
-    "type": "drupal-module",
     "license": "GPL-2.0+",
+    "type": "drupal-module",
     "authors": [
         {
             "name": "Johnatas",
@@ -12,6 +12,7 @@
     ],
     "require": {
         "php": ">=8.4",
+        "drupal/core": "^11",
         "drush/drush": "^13"
     }
 }

@@ -16,8 +16,8 @@
   <config name="drupal_core_version" value="11"/>
 
   <!-- Drupal coding standards. -->
-  <rule ref="vendor/drupal/coder/coder_sniffer/Drupal"/>
-  <rule ref="vendor/drupal/coder/coder_sniffer/DrupalPractice"/>
+  <rule ref="Drupal"/>
+  <rule ref="DrupalPractice"/>
 
   <!-- Generic PHP Sniff. -->
   <rule ref="Squiz.WhiteSpace.OperatorSpacing" />

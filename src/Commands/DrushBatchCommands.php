@@ -20,6 +20,13 @@ class DrushBatchCommands extends DrushCommands {
   private const string DEFAULT_INIT_MESSAGE = 'Initialization...';
   private const string DEFAULT_ERROR_MESSAGE = 'An unexpected error occurred.';
 
+  /*
+   * PHPCS is not yet 100% compatible with PHP 8.4,
+   * so we are forced to ignore the "Property hooks" and the "Asymmetric Visibility" as long as they are not supported.
+   *
+   * phpcs:disable
+   */
+
   /**
    * The title of the batch process.
    *
@@ -76,6 +83,12 @@ class DrushBatchCommands extends DrushCommands {
     }
   }
 
+  /*
+   * Re-enable PHPCS for the rest of the file.
+   *
+   * phpcs:enable
+   */
+
   /**
    * DrushBatchCommands constructor.
    *
@@ -95,7 +108,7 @@ class DrushBatchCommands extends DrushCommands {
     string $title,
     string $initMessage = self::DEFAULT_INIT_MESSAGE,
     string $errorMessage = self::DEFAULT_ERROR_MESSAGE,
-    array $finished = []
+    array $finished = [],
   ) {
     parent::__construct();
 
