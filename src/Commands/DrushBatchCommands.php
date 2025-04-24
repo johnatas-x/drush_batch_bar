@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\drush_batch_bar\Commands;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\drush_batch_bar\Batch\DrushBatchBar;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -19,6 +20,16 @@ class DrushBatchCommands extends DrushCommands {
    */
   private const string DEFAULT_INIT_MESSAGE = 'Initialization...';
   private const string DEFAULT_ERROR_MESSAGE = 'An unexpected error occurred.';
+
+  /**
+   * Default finished method.
+   *
+   * @var array{0: object|string, 1: string}
+   */
+  private const array DEFAULT_FINISHED = [
+    DrushBatchBar::class,
+    'finished'
+  ];
 
   /*
    * PHPCS is not yet 100% compatible with PHP 8.4,
@@ -108,7 +119,7 @@ class DrushBatchCommands extends DrushCommands {
     string $title,
     string $initMessage = self::DEFAULT_INIT_MESSAGE,
     string $errorMessage = self::DEFAULT_ERROR_MESSAGE,
-    array $finished = [],
+    array $finished = self::DEFAULT_FINISHED,
   ) {
     parent::__construct();
 
