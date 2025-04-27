@@ -7,6 +7,7 @@ namespace Drupal\drush_batch_bar\Commands;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\drush_batch_bar\Batch\DrushBatchBar;
 use Drush\Commands\DrushCommands;
+use Drush\Style\DrushStyle;
 
 /**
  * Base class for batched Drush commands.
@@ -66,6 +67,15 @@ class DrushBatchCommands extends DrushCommands {
   }
 
   /**
+   * Number of batch operations.
+   *
+   * @var ?int
+   */
+  protected private(set) ?int $batchOperations {
+    set (?int $batchOperations) => $this->batchOperations = $batchOperations ?? count($this->operations);
+  }
+
+  /**
    * The method to call when the batch process is finished.
    *
    * @var array{0: object|string, 1: string}
@@ -105,6 +115,8 @@ class DrushBatchCommands extends DrushCommands {
    *
    * @param array<mixed> $operations
    *   Batch operations.
+   * @param \Drush\Style\DrushStyle $drush_io
+   *   The drush IO.
    * @param string $title
    *   Batch title.
    * @param string $initMessage
@@ -113,26 +125,35 @@ class DrushBatchCommands extends DrushCommands {
    *   Batch error message.
    * @param array{0: object|string, 1: string} $finished
    *   Batch finished method.
+   * @param int|null $batchOperations
+   *   Number of batch operations.
    */
   public function __construct(
     public readonly array $operations,
+    protected DrushStyle $drush_io,
     string $title,
     string $initMessage = self::DEFAULT_INIT_MESSAGE,
     string $errorMessage = self::DEFAULT_ERROR_MESSAGE,
     array $finished = self::DEFAULT_FINISHED,
+    ?int $batchOperations = NULL,
   ) {
     parent::__construct();
 
+    $this->io = $drush_io;
     $this->title = $title;
     $this->initMessage = $initMessage;
     $this->errorMessage = $errorMessage;
     $this->finished = $finished;
+    $this->batchOperations = $batchOperations;
   }
 
   /**
    * Execute the drush command.
    */
   public function execute(): void {
+    // Start the progress bar.
+    $this->io->progressStart($this->batchOperations ??= 1);
+
     // Put all necessary information into a batch array.
     $batch = [
       'operations' => $this->operations,
@@ -151,6 +172,9 @@ class DrushBatchCommands extends DrushCommands {
 
     // Start processing the batch operations.
     drush_backend_batch_process();
+
+    // End the progress bar.
+    $this->io->progressFinish();
   }
 
 }

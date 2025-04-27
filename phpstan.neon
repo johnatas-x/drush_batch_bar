@@ -8,5 +8,10 @@ parameters:
     reportUnmatchedIgnoredErrors: false
     inferPrivatePropertyTypeFromConstructor: true
     treatPhpDocTypesAsCertain: false
+    scanDirectories:
+      - vendor/drush/drush
+    scanFiles:
+      - vendor/drupal/core/includes/form.inc
+      - vendor/drush/drush/includes/batch.inc
     paths:
       - src
