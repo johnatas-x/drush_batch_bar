@@ -1,0 +1,5 @@
+services:
+  drush_batch_bar_process.commands:
+    class: Drupal\drush_batch_bar\Commands\ProcessCommands
+    tags:
+      - { name: drush.command }

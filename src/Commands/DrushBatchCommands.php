@@ -7,7 +7,6 @@ namespace Drupal\drush_batch_bar\Commands;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\drush_batch_bar\Batch\DrushBatchBar;
 use Drush\Commands\DrushCommands;
-use Drush\Style\DrushStyle;
 
 /**
  * Base class for batched Drush commands.
@@ -33,8 +32,8 @@ class DrushBatchCommands extends DrushCommands {
   ];
 
   /*
-   * PHPCS is not yet 100% compatible with PHP 8.4,
-   * so we are forced to ignore the "Property hooks" and the "Asymmetric Visibility" as long as they are not supported.
+   * PHPCS is not yet 100% compatible with PHP 8.4, so we are forced to ignore
+   * the "Property hooks" and the "Asymmetric Visibility" as long as they are not supported.
    *
    * phpcs:disable
    */
@@ -115,8 +114,6 @@ class DrushBatchCommands extends DrushCommands {
    *
    * @param array<mixed> $operations
    *   Batch operations.
-   * @param \Drush\Style\DrushStyle $drush_io
-   *   The drush IO.
    * @param string $title
    *   Batch title.
    * @param string $initMessage
@@ -130,7 +127,6 @@ class DrushBatchCommands extends DrushCommands {
    */
   public function __construct(
     public readonly array $operations,
-    protected DrushStyle $drush_io,
     string $title,
     string $initMessage = self::DEFAULT_INIT_MESSAGE,
     string $errorMessage = self::DEFAULT_ERROR_MESSAGE,
@@ -139,7 +135,6 @@ class DrushBatchCommands extends DrushCommands {
   ) {
     parent::__construct();
 
-    $this->io = $drush_io;
     $this->title = $title;
     $this->initMessage = $initMessage;
     $this->errorMessage = $errorMessage;
@@ -151,9 +146,6 @@ class DrushBatchCommands extends DrushCommands {
    * Execute the drush command.
    */
   public function execute(): void {
-    // Start the progress bar.
-    $this->io->progressStart($this->batchOperations ??= 1);
-
     // Put all necessary information into a batch array.
     $batch = [
       'operations' => $this->operations,
@@ -171,10 +163,7 @@ class DrushBatchCommands extends DrushCommands {
     $batch['progressive'] = FALSE;
 
     // Start processing the batch operations.
-    drush_backend_batch_process();
-
-    // End the progress bar.
-    $this->io->progressFinish();
+    drush_backend_batch_process('drush-batch-bar-process');
   }
 
 }
