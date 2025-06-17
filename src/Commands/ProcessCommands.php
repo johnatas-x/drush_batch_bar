@@ -64,7 +64,7 @@ class ProcessCommands extends DrushCommands {
     return ['drush_batch_process_finished' => FALSE];
   }
 
-  public static function drush_progress_batch_worker($io): bool {
+  public static function drush_progress_batch_worker(\Drush\Style\DrushStyle $io): bool {
     $batch = &batch_get();
     $current_set = &_batch_current_set();
     $set_changed = TRUE;
@@ -73,6 +73,7 @@ class ProcessCommands extends DrushCommands {
       $current_set['start'] = microtime(TRUE);
     }
     $queue = _batch_queue($current_set);
+    $io->setDecorated(TRUE);
     $io->progressStart($current_set['count']);
     while (!$current_set['success']) {
       if ($set_changed && isset($current_set['file']) && is_file($current_set['file'])) {

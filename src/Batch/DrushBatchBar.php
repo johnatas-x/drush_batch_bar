@@ -18,13 +18,10 @@ abstract class DrushBatchBar {
   /**
    * Init batch processes.
    *
-   * @param string $details
-   *   Details to follow command progress.
    * @param array<mixed> $context
    *   The batch context.
    */
-  protected static function initProcess(string $details, array &$context): void {
-    $context['message'] = "\n$details\n";
+  protected static function initProcess(array &$context): void {
     $context['results']['success'] ??= 0;
     $context['results']['error'] ??= 0;
   }
