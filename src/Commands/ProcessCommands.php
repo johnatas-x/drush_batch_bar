@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Drupal\drush_batch_bar\Commands;
 
@@ -56,6 +56,9 @@ class ProcessCommands extends DrushCommands {
 
     // Register database update for end of processing.
     register_shutdown_function('_drush_batch_shutdown');
+
+    $logger = new \Drupal\drush_batch_bar\Log\Logger($this->output());
+    $logger->notice($batch['sets'][0]['title']);
 
     if (static::drush_progress_batch_worker($this->io())) {
       return _drush_batch_finished();
