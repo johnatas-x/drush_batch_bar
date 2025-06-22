@@ -28,7 +28,7 @@ class DrushBatchCommands extends DrushCommands {
    */
   private const array DEFAULT_FINISHED = [
     DrushBatchBar::class,
-    'finished'
+    'finished',
   ];
 
   /*
@@ -146,7 +146,6 @@ class DrushBatchCommands extends DrushCommands {
    * Execute the drush command.
    */
   public function execute(): void {
-    // Put all necessary information into a batch array.
     $batch = [
       'operations' => $this->operations,
       'title' => $this->title,
@@ -155,14 +154,11 @@ class DrushBatchCommands extends DrushCommands {
       'finished' => $this->finished,
     ];
 
-    // Get the batch process all ready.
     batch_set($batch);
     $batch =& batch_get();
 
-    // Because we are doing this on the back-end, we set progressive to false.
     $batch['progressive'] = FALSE;
 
-    // Start processing the batch operations.
     drush_backend_batch_process('drush-batch-bar-process');
   }
 

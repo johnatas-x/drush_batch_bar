@@ -1,0 +1,272 @@
+parameters:
+  git_dir: .
+  bin_dir: vendor/bin
+grumphp:
+  extensions:
+    - GrumphpPhpa\ExtensionLoader
+  ignore_unstaged_changes: true
+  stop_on_failure: false
+  hide_circumvention_tip: false
+  fixer:
+    enabled: true
+    fix_by_default: false
+  parallel:
+    enabled: false
+  process_timeout: 60
+  git_hook_variables:
+    VAGRANT_HOST_DIR: .
+    VAGRANT_PROJECT_DIR: /var/www
+    EXEC_GRUMPHP_COMMAND: ddev exec
+    ENV: {}
+  environment:
+    files: [ ]
+    variables: { }
+    paths: [ ]
+  testsuites: []
+  tasks:
+    composer:
+      file: ./composer.json
+      no_check_all: false
+      no_check_lock: false
+      no_check_publish: false
+      no_local_repository: false
+      with_dependencies: false
+      strict: false
+      metadata:
+        blocking: true
+        enabled: true
+        label: null
+        priority: 0
+        task: null
+    composer_normalize:
+      indent_size: ~
+      indent_style: ~
+      no_check_lock: false
+      no_update_lock: true
+      verbose: false
+      metadata:
+        blocking: true
+        enabled: true
+        label: null
+        priority: 0
+        task: null
+    composer_require_checker:
+      composer_file: 'composer.json'
+      config_file: ~
+      ignore_parse_errors: false
+      triggered_by:
+        - 'composer.json'
+        - 'composer.lock'
+        - '*.php'
+      metadata:
+        blocking: true
+        enabled: false
+        label: null
+        priority: 0
+        task: null
+    git_blacklist:
+      keywords:
+        - "die\\("
+        - "var_dump\\("
+        - "exit;"
+      whitelist_patterns:
+        - src
+      triggered_by:
+        - inc
+        - install
+        - module
+        - php
+        - profile
+        - theme
+      regexp_type: G
+      match_word: true
+      ignore_patterns: [ ]
+      metadata:
+        blocking: true
+        enabled: false
+        label: null
+        priority: 0
+        task: null
+    phpa:
+      path: src
+      metadata:
+        blocking: true
+        enabled: true
+        label: null
+        priority: 0
+        task: null
+    phpcpd:
+      directory:
+        - src
+      fuzzy: false
+      min_lines: 5
+      min_tokens: 70
+      triggered_by:
+        - inc
+        - install
+        - module
+        - php
+        - profile
+        - theme
+      metadata:
+        blocking: true
+        enabled: true
+        label: null
+        priority: 0
+        task: null
+    phpcs:
+      standard:
+        - phpcs.xml
+        - vendor/drupal/coder/coder_sniffer/Drupal
+        - vendor/drupal/coder/coder_sniffer/DrupalPractice
+      severity: ~
+      error_severity: ~
+      warning_severity: ~
+      tab_width: ~
+      report: full,summary
+      report_width: ~
+      whitelist_patterns:
+        - src
+      encoding: ~
+      ignore_patterns: [ ]
+      sniffs: [ ]
+      triggered_by:
+        - inc
+        - info
+        - install
+        - module
+        - php
+        - profile
+        - test
+        - theme
+        - yml
+      exclude: [ ]
+      show_sniffs_error_path: true
+      metadata:
+        blocking: true
+        enabled: true
+        label: null
+        priority: 0
+        task: null
+    phplint:
+      exclude: [ ]
+      jobs: ~
+      short_open_tag: false
+      ignore_patterns:
+        - "#vendor/(.*)#"
+      triggered_by:
+        - inc
+        - install
+        - module
+        - php
+        - profile
+        - theme
+      metadata:
+        blocking: true
+        enabled: true
+        label: null
+        priority: 0
+        task: null
+    phpmd:
+      whitelist_patterns:
+        - /^src\/(.*)/
+      exclude: [ ]
+      report_format: text
+      ruleset:
+        - phpmd.xml
+      triggered_by:
+        - inc
+        - install
+        - module
+        - php
+        - profile
+        - theme
+      metadata:
+        blocking: true
+        enabled: true
+        label: null
+        priority: 0
+        task: null
+    phpmnd:
+      directory: src
+      whitelist_patterns: [ ]
+      exclude_name: [ ]
+      exclude_path: [ ]
+      extensions: [ ]
+      hint: false
+      ignore_funcs: [ ]
+      ignore_numbers: [ ]
+      ignore_strings: [ ]
+      strings: false
+      triggered_by:
+        - inc
+        - info
+        - install
+        - module
+        - php
+        - profile
+        - test
+        - theme
+      metadata:
+        blocking: true
+        enabled: true
+        label: null
+        priority: 0
+        task: null
+    phpstan:
+      autoload_file: ~
+      configuration: ~
+      level: null
+      force_patterns: [ ]
+      ignore_patterns: [ ]
+      triggered_by:
+        - engine
+        - inc
+        - install
+        - module
+        - php
+        - profile
+        - theme
+      memory_limit: "-1"
+      use_grumphp_paths: true
+      metadata:
+        blocking: true
+        enabled: true
+        label: null
+        priority: 0
+        task: null
+    phpversion:
+      project: '8.4'
+      metadata:
+        blocking: true
+        enabled: true
+        label: null
+        priority: 0
+        task: null
+    securitychecker_composeraudit:
+      abandoned: null
+      format: null
+      locked: true
+      no_dev: true
+      run_always: true
+      working_dir: null
+      metadata:
+        blocking: true
+        enabled: true
+        label: null
+        priority: 0
+        task: null
+    yamllint:
+      whitelist_patterns: []
+      ignore_patterns:
+        - /^vendor\/(.*)/
+      object_support: false
+      exception_on_invalid_type: false
+      parse_constant: false
+      parse_custom_tags: false
+      metadata:
+        blocking: true
+        enabled: true
+        label: null
+        priority: 0
+        task: null

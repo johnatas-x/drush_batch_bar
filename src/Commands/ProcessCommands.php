@@ -1,11 +1,15 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\drush_batch_bar\Commands;
 
+use Drupal\Core\Database\Connection;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\drush_batch_bar\Log\Logger;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
+use Drush\Style\DrushStyle;
 
 /**
  * Base class for batched Drush commands.
@@ -13,6 +17,24 @@ use Drush\Commands\DrushCommands;
 class ProcessCommands extends DrushCommands {
 
   use StringTranslationTrait;
+
+  /**
+   * The database service.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected Connection $database;
+
+  /**
+   * Maximum percentage of a batch.
+   */
+  private const int MAX_PERCENTAGE = 100;
+
+  public function __construct(Connection $database) {
+    parent::__construct();
+
+    $this->database = $database;
+  }
 
   /**
    * Progress bar management.
@@ -27,50 +49,60 @@ class ProcessCommands extends DrushCommands {
    *
    * @aliases drush-batch-bar-process
    *
-   * @usage drush fill-lotto-stats
-   *   Fill stats to DB.
+   * @usage drush_batch_bar:process 123
+   *   Process batch 123 with a progress bar.
    *
    * @return array|false
    *   Batch ended or not.
    */
   public function process($id, $options = ['format' => 'json']): array|false {
-    include_once(DRUSH_DRUPAL_CORE . '/includes/batch.inc');
+    include_once DRUSH_DRUPAL_CORE . '/includes/batch.inc';
     $batch =& batch_get();
 
-    $data = \Drupal\Core\Database\Database::getConnection()->select('batch', 'b')
+    $data = $this->database->select('batch', 'b')
       ->fields('b', ['batch'])
       ->condition('bid', (int) $id)
       ->execute()
       ->fetchField();
 
-    if ($data) {
-      $batch = unserialize($data, ['allowed_classes' => FALSE]);
-    }
-    else {
+    if (empty($data)) {
       return FALSE;
     }
+
+    $batch = unserialize($data, ['allowed_classes' => FALSE]);
 
     if (!isset($batch['running'])) {
       $batch['running'] = TRUE;
     }
 
-    // Register database update for end of processing.
     register_shutdown_function('_drush_batch_shutdown');
 
-    $logger = new \Drupal\drush_batch_bar\Log\Logger($this->output());
-    $logger->logByMethod($batch['sets'][0]['title'], 'title');
+    $logger = new Logger($this->output());
+    $logger->simpleTitle($batch['sets'][0]['title']);
 
-    if (static::drush_progress_batch_worker($this->io())) {
+    if (static::drush_progress_batch_worker($this->io(), $logger)) {
       return _drush_batch_finished();
     }
 
     return ['drush_batch_process_finished' => FALSE];
   }
 
-  public static function drush_progress_batch_worker(\Drush\Style\DrushStyle $io): bool {
+  /**
+   * Progress worker.
+   *
+   * @param \Drush\Style\DrushStyle $io
+   *   The current Drush style.
+   * @param $logger
+   *   The current logger.
+   *
+   * @return bool
+   *   TRUE if the batch is finished.
+   */
+  public static function drush_progress_batch_worker(DrushStyle $io, $logger): bool {
     $batch = &batch_get();
     $current_set = &_batch_current_set();
     $set_changed = TRUE;
+    $drush_config = Drush::config();
 
     if (empty($current_set['start'])) {
       $current_set['start'] = microtime(TRUE);
@@ -96,11 +128,11 @@ class ProcessCommands extends DrushCommands {
           'message' => &$task_message,
         ];
 
-        $halt_on_error = \Drush\Drush::config()->get('runtime.php.halt-on-error', TRUE);
-        \Drush\Drush::config()->set('runtime.php.halt-on-error', FALSE);
+        $halt_on_error = $drush_config->get('runtime.php.halt-on-error', TRUE);
+        $drush_config->set('runtime.php.halt-on-error', FALSE);
         call_user_func_array($callback, array_merge($args, [&$batch_context]));
         $io->progressAdvance();
-        \Drush\Drush::config()->set('runtime.php.halt-on-error', $halt_on_error);
+        $drush_config->set('runtime.php.halt-on-error', $halt_on_error);
 
         if ($finished >= 1) {
           $finished = 0;
@@ -121,7 +153,7 @@ class ProcessCommands extends DrushCommands {
       $queue = _batch_queue($current_set);
 
       if (drush_memory_limit() > 0 && (memory_get_usage() * 1.6) >= drush_memory_limit()) {
-        \Drush\Drush::logger()->notice(dt('Batch process has consumed in excess of 60% of available memory. Starting new thread'));
+        $logger->simpleWarning(dt('Batch process has consumed in excess of 60% of available memory. Starting new thread'));
         $current_set['elapsed'] = round((microtime(TRUE) - $current_set['start']) * 1000, 2);
         break;
       }
@@ -140,7 +172,8 @@ class ProcessCommands extends DrushCommands {
 
     $current = $total - $remaining + $finished;
     $percentage = _batch_api_percentage($total, $current);
-    return ($percentage == 100);
+
+    return ((int) $percentage === static::MAX_PERCENTAGE);
   }
 
 }
