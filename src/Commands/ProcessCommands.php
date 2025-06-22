@@ -58,7 +58,7 @@ class ProcessCommands extends DrushCommands {
     register_shutdown_function('_drush_batch_shutdown');
 
     $logger = new \Drupal\drush_batch_bar\Log\Logger($this->output());
-    $logger->notice($batch['sets'][0]['title']);
+    $logger->logByMethod($batch['sets'][0]['title'], 'title');
 
     if (static::drush_progress_batch_worker($this->io())) {
       return _drush_batch_finished();

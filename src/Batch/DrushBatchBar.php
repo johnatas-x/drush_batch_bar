@@ -36,7 +36,7 @@ abstract class DrushBatchBar {
    * @param array<int, array{0: callable, 1: array<int, mixed>}> $operations
    *   Operations launched.
    */
-  protected static function finished(bool $success, array $results, array $operations): void {
+  public static function finished(bool $success, array $results, array $operations): void {
     if ($success === TRUE) {
       \Drupal::messenger()->addStatus(
         \Drupal::translation()->translate(
