@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\drush_batch_bar\Log;
 
 use Drush\Log\Logger as DrushLogger;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Custom logger that provides simplified message output for Drush.
@@ -68,7 +69,7 @@ class Logger extends DrushLogger {
       $stream->newLine();
     }
 
-    if (method_exists($stream, $method)) {
+    if ($stream instanceof SymfonyStyle && method_exists($stream, $method)) {
       $stream->{$method}($message);
     }
     else {
