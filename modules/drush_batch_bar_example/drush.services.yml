@@ -1,0 +1,5 @@
+services:
+  dbb_example.commands:
+    class: Drupal\drush_batch_bar_example\Commands\ExampleCommands
+    tags:
+      - { name: drush.command }

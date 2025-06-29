@@ -1,0 +1,7 @@
+name: 'Drush Batch Bar : Examples'
+type: module
+description: 'Drush Bar Batch commands examples.'
+core_version_requirement: ^11
+package: Development
+dependencies:
+  - 'drush_batch_bar:drush_batch_bar'
