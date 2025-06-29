@@ -64,11 +64,8 @@ If necessary, you can also create your own Batch class by extending `DrushBatchB
 In it, you can define your custom operations, the process method (where you can call `parent::initProcess($context);`), and the finish method.
 
 > [!TIP]
-> You can see an example implementation in the `drush_batch_bar_example` module.
-> You can also install this module and run the `drush dbb` command to see a sample output.
->
-> Multiple batches can be triggered within the same Drush command.
-> Similarly, an example implementation is available in the `drush_batch_bar_example` module, and the corresponding command is `drush dbbm`.
+> You can see implementation examples in the `drush_batch_bar_example` module.
+> You can also install this module and run the commands to see the outputs.
 
 ## MAINTAINERS
 

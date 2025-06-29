@@ -32,17 +32,22 @@ abstract class DrushBatchBar {
     $logger = new Logger(Drush::output());
 
     if ($success === TRUE) {
-      $logger->simpleSuccess(
-        \Drupal::translation()->translate(
-          '@success @success_message, @error @error_message.',
-          [
-            '@success' => $results['success'] ?? 0,
-            '@success_message' => static::SUCCESS_MESSAGE,
-            '@error' => $results['error'] ?? 0,
-            '@error_message' => static::ERROR_MESSAGE,
-          ]
-        )->render()
-      );
+      $message = \Drupal::translation()->translate(
+        '@success @success_message, @error @error_message.',
+        [
+          '@success' => $results['success'] ?? 0,
+          '@success_message' => static::SUCCESS_MESSAGE,
+          '@error' => $results['error'] ?? 0,
+          '@error_message' => static::ERROR_MESSAGE,
+        ]
+      )->render();
+
+      if ($results['error'] ?? 0) {
+        $logger->simpleWarning($message);
+      }
+      else {
+        $logger->simpleSuccess($message);
+      }
 
       return;
     }
