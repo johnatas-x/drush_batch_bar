@@ -1,5 +1,6 @@
 services:
   drush_batch_bar_process.commands:
     class: Drupal\drush_batch_bar\Commands\ProcessCommands
+    arguments: ['@database']
     tags:
       - { name: drush.command }
