@@ -68,7 +68,7 @@ In it, you can define your custom operations, the process method (where you can 
 > You can also install this module and run the `drush dbb` command to see a sample output.
 >
 > Multiple batches can be triggered within the same Drush command.
-> Similarly, an example implementation is available in the `drush_batch_bar_example` module, and the corresponding command is drush dbbm.
+> Similarly, an example implementation is available in the `drush_batch_bar_example` module, and the corresponding command is `drush dbbm`.
 
 ## MAINTAINERS
 
